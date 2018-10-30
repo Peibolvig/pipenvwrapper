@@ -94,11 +94,11 @@ file. Any value other than empty will do.
 
 .. code:: bash
 
-    export PIPENVWRAPPER_ORIGINAL_FUNCTION_NAMES=1
+    export PIPENVWRAPPER_VIRTUALENVWRAPPER_FUNCTION_NAMES=1
 
 .. note::
 
-    Take into account that the only really important is that the variable is
+    Take into account that the really important thing is that the variable is
     set and has some value. It does not matter the value itself, so even if you
     set it as 0 or false it will switch on the original function names
 
