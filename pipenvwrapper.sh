@@ -1,6 +1,6 @@
 # -*- mode: shell-script -*-
 #
-# Shell functions to act as wrapper for Keneth Reitz's pipenv
+# Shell functions to act as wrapper for Kenneth Reitz's pipenv
 # (http://pypi.python.org/pypi/pipenv)
 #
 # PipenvWrappper by Pablo Vázquez Rodríguez is heavily based on 

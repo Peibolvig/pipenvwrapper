@@ -4,8 +4,8 @@
 Pipenvwrapper
 =============
 
-`Pipenvwrapper <https://github.com/Peibolvig/pipenvwrapper>`_ is a set wrapper functions to Keneth Reitz's `pipenv
-<http://pypi.python.org/pypi/pipenv>`_ tool.
+`Pipenvwrapper <https://github.com/Peibolvig/pipenvwrapper>`_ is a set wrapper
+functions to Kenneth Reitz's `pipenv <http://pypi.python.org/pypi/pipenv>`_ tool.
 
 Pipenvwrapper is heavily based on modifications and cherrypicking of Doug
 Hellman's `virtualenvwrapper <http://www.doughellmann.com/projects/virtualenvwrapper/>`_
