@@ -94,7 +94,7 @@ file. Any value other than empty will do.
 
 .. code:: bash
 
-    export PIPENVWRAPPER_VIRTUALENVWRAPPER_FUNCTION_NAMES=1
+    export PIPENVWRAPPER_USE_VIRTUALENVWRAPPER_FUNCTION_NAMES=1
 
 .. note::
 
