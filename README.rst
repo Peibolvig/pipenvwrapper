@@ -60,15 +60,6 @@ Methods to use with non active virtualenv
 * **useenv [workon]**: use specified virtualenv or list all of them available if
   none is provided
 
-Methods to use in any situation
--------------------------------
-
-* **listvirtualenvs [lsvirtualenv]**: list virtualenvs available
-
-* **pipenvwrapper**: show help message
-
-* **removevirtualenv [rmvirtualenv]**: remove specified virtualenv
-
 Methods to use with active virtualenv
 -------------------------------------
 
@@ -78,6 +69,18 @@ Methods to use with active virtualenv
   one
 
 * **gotovirtualenv [cdvirtualenv]**: change to the active virtualenv directory
+
+* **getrequirements**: Echoes the list of all the requirements (including the
+  dev ones) in a pip freeze way
+
+Methods to use in any situation
+-------------------------------
+
+* **listvirtualenvs [lsvirtualenv]**: list virtualenvs available
+
+* **pipenvwrapper**: show help message
+
+* **removevirtualenv [rmvirtualenv]**: remove specified virtualenv
 
 
 .. _`Using the virtualenvwrapper methods`:

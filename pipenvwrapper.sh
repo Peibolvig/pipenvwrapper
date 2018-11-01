@@ -581,6 +581,11 @@ function useenv {
 
 }
 
+#:help:getrequirements: Echoes the list of all the requirements (including dev ones) in a pip freeze way
+function getrequirements {
+    { pipenv lock -r 2>/dev/null & pipenv lock -d -r 2>/dev/null; } | grep -v '\-i https://pypi.org/simple' | sort | uniq | sed "1i\-i https://pypi.org/simple"
+}
+
 # Set up tab completion.  (Adapted from Arthur Koziel's version at
 # http://arthurkoziel.com/2008/10/11/virtualenvwrapper-bash-completion/)
 function _pipenvwrapper_setup_tab_completion {
