@@ -648,8 +648,13 @@ function useenv {
 
 #:help:getrequirements: Echoes the list of all the requirements (including dev ones) in a pip freeze way
 function getrequirements {
-    # TODO: Checking if Pipfile is present would avoid the creation of a Pipfile and Pipfile.lock if invoked outside folder and not active venv
-    { pipenv lock -r 2>/dev/null & pipenv lock -d -r 2>/dev/null; } | grep -v '\-i https://pypi.org/simple' | sort | uniq | sed "1i\-i https://pypi.org/simple"
+    if [ ! -f "./Pipfile" ] || [ ! -f "./Pipfile.lock" ]
+    then
+        echo "No Pipfile present in the current dir."
+        echo "If retry after using cdproject command to go to the desired project dir."
+    else
+        { pipenv lock -r 2>/dev/null & pipenv lock -d -r 2>/dev/null; } | grep -v '\-i https://pypi.org/simple' | sort | uniq | sed "1i\-i https://pypi.org/simple"
+    fi
 }
 
 # Set up tab completion.  (Adapted from Arthur Koziel's version at
