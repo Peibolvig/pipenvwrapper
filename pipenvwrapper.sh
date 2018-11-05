@@ -204,23 +204,89 @@ function gotovirtualenv {
 
 #########################################################################
 
-#:help:gotoproject [cdproject]: change directory to the active project
+# Show help for workon
+function __pipenv_gotoproject_help {
+    echo "Usage: $pipenv_fn_gotoproject [env_name]"
+    echo ""
+    echo "           Change directory to the active project or to"
+    echo "           the provided env_name project"
+    echo ""
+    echo "       $pipenv_fn_gotoproject (-h|--help)"
+    echo ""
+    echo "           Show this help message."
+    echo ""
+}
+
+#:help:gotoproject [cdproject]: change directory to the active or provided project
 function gotoproject {
-    _pipenvwrapper_verify_workon_home || return 1
-    _pipenvwrapper_verify_active_environment || return 1
-    if [ -f "$VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME" ]
+    typeset -a in_args
+    typeset -a out_args
+
+    in_args=( "$@" )
+
+    if [ -n "$ZSH_VERSION" ]
     then
-        typeset project_dir="$(cat "$VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME")"
-        if [ ! -z "$project_dir" ]
+        i=1
+        tst="-le"
+    else
+        i=0
+        tst="-lt"
+    fi
+    typeset cd_after_activate=1  # Enter into project directory on useenv
+    while [ $i $tst $# ]
+    do
+        a="${in_args[$i]}"
+        case "$a" in
+            -h|--help)
+                __pipenv_gotoproject_help;
+                return 0;;
+            *)
+                if [ ${#out_args} -gt 0 ]
+                then
+                    out_args=( "${out_args[@]-}" "$a" )
+                else
+                    out_args=( "$a" )
+                fi;;
+        esac
+        i=$(( $i + 1 ))
+    done
+
+    set -- "${out_args[@]}"
+
+    _pipenvwrapper_verify_workon_home || return 1
+    typeset env_name="$1"
+    if [ "$env_name" = "" ]
+    then
+        # Project name not provided
+        if [ ! -n "${VIRTUAL_ENV}" ] || [ ! -d "${VIRTUAL_ENV}" ]
         then
-            _pipenvwrapper_cd "$project_dir"
-        else
-            echo "Project directory $project_dir does not exist" 1>&2
+            # Virtualenv not active
+            listvirtualenvs
             return 1
+        else
+            # Virtualenv IS active
+            if [ -f "$VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME" ]
+            then
+                typeset project_dir="$(cat "$VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME")"
+                if [ ! -z "$project_dir" ]
+                then
+                    _pipenvwrapper_cd "$project_dir"
+                else
+                    echo "Project directory $project_dir does not exist" 1>&2
+                    return 1
+                fi
+            else
+                echo "No project set in $VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME" 1>&2
+                return 1
+            fi
+            return 0
         fi
     else
-        echo "No project set in $VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME" 1>&2
-        return 1
+        # Virtualenv not active but provided
+        _pipenvwrapper_verify_useenv_environment "$env_name" || return 1
+        typeset project_dir=$(cat $WORKON_HOME/$env_name/$VIRTUALENVWRAPPER_PROJECT_FILENAME)
+        _pipenvwrapper_verify_useenv_project "$project_dir" || return 1
+        _pipenvwrapper_cd "$project_dir"
     fi
     return 0
 }
@@ -473,8 +539,7 @@ function __pipenv_useenv_help {
     echo "Usage: $pipenv_fn_useenv env_name"
     echo ""
     echo "           Deactivate any currently activated virtualenv"
-    echo "           and activate the named environment, triggering"
-    echo "           any hooks in the process."
+    echo "           or activate the named environment"
     echo ""
     echo "       $pipenv_fn_useenv"
     echo ""
@@ -583,6 +648,7 @@ function useenv {
 
 #:help:getrequirements: Echoes the list of all the requirements (including dev ones) in a pip freeze way
 function getrequirements {
+    # TODO: Checking if Pipfile is present would avoid the creation of a Pipfile and Pipfile.lock if invoked outside folder and not active venv
     { pipenv lock -r 2>/dev/null & pipenv lock -d -r 2>/dev/null; } | grep -v '\-i https://pypi.org/simple' | sort | uniq | sed "1i\-i https://pypi.org/simple"
 }
 
@@ -604,10 +670,12 @@ function _pipenvwrapper_setup_tab_completion {
         }
         complete -o nospace -F _gotovirtualenv_complete -S/ gotovirtualenv
         complete -o nospace -F _gotositepackages_complete -S/ gotositepackages
-        complete -o default -o nospace -F _virtualenvs useenv workon
+        complete -o default -o nospace -F _virtualenvs useenv
         complete -o default -o nospace -F _virtualenvs workon
         complete -o default -o nospace -F _virtualenvs removevirtualenv
         complete -o default -o nospace -F _virtualenvs rmvirtualenv
+        complete -o default -o nospace -F _virtualenvs gotoproject
+        complete -o default -o nospace -F _virtualenvs cdproject
     elif [ -n "$ZSH_VERSION" ] ; then
         _virtualenvs () {
             reply=( $(_pipenvwrapper_show_workon_options) )
@@ -618,7 +686,7 @@ function _pipenvwrapper_setup_tab_completion {
         _gotositepackages_complete () {
             reply=( $(gotositepackages && ls -d ${1}*) )
         }
-        compctl -K _virtualenvs useenv workon removevirtualenv #cpvirtualenv showvirtualenv
+        compctl -K _virtualenvs useenv workon removevirtualenv gotoproject cdproject #cpvirtualenv showvirtualenv
         compctl -K _gotovirtualenv_complete gotovirtualenv
         compctl -K _gotositepackages_complete gotositepackages
     fi

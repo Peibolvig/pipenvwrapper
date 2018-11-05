@@ -65,9 +65,6 @@ Methods to use with active virtualenv
 
 * **gotoproject [cdproject]**: change directory to the active project one
 
-* **gotositepackages [cdsitepackages]**: change directory to the site-packages
-  one
-
 * **gotovirtualenv [cdvirtualenv]**: change to the active virtualenv directory
 
 * **getrequirements**: Echoes the list of all the requirements (including the
@@ -75,6 +72,9 @@ Methods to use with active virtualenv
 
 Methods to use in any situation
 -------------------------------
+
+* **gotositepackages [cdsitepackages]**: change directory to the site-packages
+  one
 
 * **listvirtualenvs [lsvirtualenv]**: list virtualenvs available
 
