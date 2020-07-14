@@ -30,7 +30,7 @@ Installation
 Just copy the *pipenvwrapper.sh* file in some accessible path and add
 the next lines to your shell startup file (.bashrc, .profile, ...) to set the
 location where the virtual environments should live, the location of your
-development project directories and the sourcing of the *pienvwrapper.sh* file
+development project directories and the sourcing of the *pipenvwrapper.sh* file
 
 .. code:: bash
 
