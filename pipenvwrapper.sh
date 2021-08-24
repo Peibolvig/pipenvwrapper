@@ -653,7 +653,7 @@ function getrequirements {
         echo "No Pipfile present in the current dir."
         echo "If retry after using cdproject command to go to the desired project dir."
     else
-        { pipenv lock -r 2>/dev/null & pipenv lock -d -r 2>/dev/null; } | grep -v '\-i https://pypi.org/simple' | sort | uniq | sed "1i\-i https://pypi.org/simple"
+        { pipenv lock -r 2>/dev/null & pipenv lock -d -r 2>/dev/null; } | grep -v '\-i https://pypi.org/simple' | grep -v '^#' | sort | uniq | sed "1i\-i https://pypi.org/simple"
     fi
 }
 
