@@ -36,7 +36,7 @@ development project directories and the sourcing of the *pienvwrapper.sh* file
 
     export WORKON_HOME=$HOME/.virtualenvs
     export PROJECT_HOME=$HOME/Devel
-    source /usr/local/bin/pipenwrapper.sh
+    source /usr/local/bin/pipenvwrapper.sh
 
 After editing it, reload the startup file (e.g.,
 run ``/usr/bin/pipenwrapper.sh``)
