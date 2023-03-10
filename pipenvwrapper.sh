@@ -657,6 +657,9 @@ function useenv {
 
 #:help:getrequirements: Echoes the list of all the requirements (including dev ones) in a pip freeze way
 function getrequirements {
+    echo "DEPRECATION INFO: Since pipenv v2022.8.13 the -r flag used to get requirents.txt format is removed."
+    echo "                  The correct way to generate requirements.txt is:"
+    echo "                  pipenv requirements > requirements.txt"
     if [ ! -f "./Pipfile" ] || [ ! -f "./Pipfile.lock" ]
     then
         echo "No Pipfile present in the current dir."
