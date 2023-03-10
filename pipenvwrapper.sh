@@ -539,7 +539,9 @@ function __pipenv_useenv_help {
     echo "Usage: $pipenv_fn_useenv env_name"
     echo ""
     echo "           Deactivate any currently activated virtualenv"
-    echo "           or activate the named environment"
+    echo "           or activate the named environment."
+    echo "           If .projectenv file is present, source it after"
+    echo "           the activation of the environment."
     echo ""
     echo "       $pipenv_fn_useenv"
     echo ""
@@ -624,24 +626,31 @@ function useenv {
     _pipenvwrapper_cd $useenv_project_dir
     if [ $? -eq 0 ]
     then
-       # If virtualenv has no Pipfile ask user to create one or abort
-       if [ ! -f "$useenv_project_dir/Pipfile" ]; then
-           echo ""
-           echo "The project associated with the $env_name environment was not
-           created with pipenv or has no Pipfile in project folder."
-           read -p "Would you like to create a pipenv environment for the project
-           that is in folder $useenv_project_dir ? [y/N]: " choice
-           case "$choice" in
-               y|Y ) ;;
-               n|N|* )
-                   echo "Operation aborted"
-                   return 0 ;;
-           esac
-       fi
-       pipenv shell
-       return 0
+        # If virtualenv has no Pipfile ask user to create one or abort
+        if [ ! -f "$useenv_project_dir/Pipfile" ]; then
+            echo ""
+            echo "The project associated with the $env_name environment was not
+            created with pipenv or has no Pipfile in project folder."
+            read -p "Would you like to create a pipenv environment for the project
+            that is in folder $useenv_project_dir ? [y/N]: " choice
+            case "$choice" in
+                y|Y ) ;;
+                n|N|* )
+                    echo "Operation aborted"
+                    return 0 ;;
+            esac
+        fi
+        # If .projectenv file present source it
+        if [ -f "$useenv_project_dir/.projectenv" ]
+        then
+            source_projectenv="source .projectenv"
+        else
+            source_projectenv=""
+        fi
+        pipenv shell $source_projectenv
+        return 0
     else
-       return 1
+        return 1
     fi
 
 }
